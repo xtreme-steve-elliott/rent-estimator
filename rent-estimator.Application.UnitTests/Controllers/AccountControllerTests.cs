@@ -1,3 +1,18 @@
+using System.Linq;
+using System.Net.Mime;
+using System.Threading;
+using System.Threading.Tasks;
+using FluentAssertions;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
+using rent_estimator.Controllers;
+using rent_estimator.Modules.Account.Commands;
+using rent_estimator.Shared.Documentation;
+using rent_estimator.Shared.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using Xunit;
+
 namespace rent_estimator.Application.UnitTests.Controllers;
 
 public class AccountControllerTests

@@ -21,4 +21,17 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\rent-estimator.Modules\rent-estimator.Modules.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="FluentAssertions, Version=6.7.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a">
+      <HintPath>..\..\..\.nuget\packages\fluentassertions\6.7.0\lib\net6.0\FluentAssertions.dll</HintPath>
+    </Reference>
+    <Reference Include="Moq, Version=4.18.0.0, Culture=neutral, PublicKeyToken=69f491c39445e920">
+      <HintPath>..\..\..\.nuget\packages\moq\4.18.1\lib\net6.0\Moq.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

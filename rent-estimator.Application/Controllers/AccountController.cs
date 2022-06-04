@@ -1,6 +1,14 @@
+using System.Net.Mime;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using rent_estimator.Modules.Account.Commands;
+using rent_estimator.Shared.Documentation;
+using rent_estimator.Shared.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+
 namespace rent_estimator.Controllers;
 
-[Route("accounts")]
+[Microsoft.AspNetCore.Components.Route("accounts")]
 public class AccountController : ApiControllerBase, IAccountController
 {
     private readonly IMediator _mediator;
@@ -19,7 +27,7 @@ public class AccountController : ApiControllerBase, IAccountController
     )]
     public async Task<ActionResult<CreateAccountResponse>> CreateAsync(
         [FromBody] CreateAccountRequest request,
-        [SwaggerFromHeader] StandardRequestHeader header,
+        [FromHeader] StandardRequestHeader header,
         CancellationToken cancellationToken
     ) {
         return new OkObjectResult(await _mediator.Send(request, cancellationToken));

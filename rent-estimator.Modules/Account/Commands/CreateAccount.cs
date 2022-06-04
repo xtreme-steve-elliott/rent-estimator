@@ -1,3 +1,11 @@
+using System.ComponentModel.DataAnnotations;
+using FluentValidation;
+using MediatR;
+using rent_estimator.Modules.Account.Dao;
+using rent_estimator.Shared.Documentation;
+using rent_estimator.Shared.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+
 namespace rent_estimator.Modules.Account.Commands;
 
 public class CreateAccountRequest: IRequest<CreateAccountResponse>

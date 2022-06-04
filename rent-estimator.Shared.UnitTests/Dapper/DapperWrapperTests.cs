@@ -1,6 +1,10 @@
+using System.Collections.Generic;
 using Dapper;
+using FluentAssertions;
+using Moq;
 using Moq.Dapper;
 using rent_estimator.Shared.Dapper;
+using Xunit;
 
 namespace rent_estimator.Shared.UnitTests.Dapper;
 

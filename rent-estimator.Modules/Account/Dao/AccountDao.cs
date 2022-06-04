@@ -1,3 +1,5 @@
+using rent_estimator.Shared.Dapper;
+
 namespace rent_estimator.Modules.Account.Dao;
 
 public class AccountDao : IAccountDao

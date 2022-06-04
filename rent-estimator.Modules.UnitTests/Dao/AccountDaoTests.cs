@@ -1,3 +1,11 @@
+using System;
+using FluentAssertions;
+using Moq;
+using Newtonsoft.Json;
+using rent_estimator.Modules.Account.Dao;
+using rent_estimator.Shared.Dapper;
+using Xunit;
+
 namespace rent_estimator.Modules.UnitTests.Dao;
 
 public class AccountDaoTests
