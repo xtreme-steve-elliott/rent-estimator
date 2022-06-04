@@ -5,6 +5,16 @@ VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rent-estimator.Application", "rent-estimator.Application\rent-estimator.Application.csproj", "{9A263603-D0ED-4389-B86B-832FFCBF5C54}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rent-estimator.Application.UnitTests", "rent-estimator.Application.UnitTests\rent-estimator.Application.UnitTests.csproj", "{18EEE8A0-D5B9-4439-B87C-A14E92FC26CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rent-estimator.Modules.UnitTests", "rent-estimator.Modules.UnitTests\rent-estimator.Modules.UnitTests.csproj", "{0C59A96D-A13C-452D-A4C1-55D2C7F6335F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rent-estimator.Modules", "rent-estimator.Modules\rent-estimator.Modules.csproj", "{C558AC16-89F2-4083-9E0A-C7BAD7B52B8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rent-estimator.Shared", "rent-estimator.Shared\rent-estimator.Shared.csproj", "{4A99C63E-47C3-407B-B58F-C7A07206563F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rent-estimator.Shared.UnitTests", "rent-estimator.Shared.UnitTests\rent-estimator.Shared.UnitTests.csproj", "{5A18F147-AFFF-4B81-8C1C-1607A233FFC8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +28,25 @@ Global
 		{9A263603-D0ED-4389-B86B-832FFCBF5C54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A263603-D0ED-4389-B86B-832FFCBF5C54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A263603-D0ED-4389-B86B-832FFCBF5C54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18EEE8A0-D5B9-4439-B87C-A14E92FC26CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18EEE8A0-D5B9-4439-B87C-A14E92FC26CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18EEE8A0-D5B9-4439-B87C-A14E92FC26CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18EEE8A0-D5B9-4439-B87C-A14E92FC26CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C59A96D-A13C-452D-A4C1-55D2C7F6335F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C59A96D-A13C-452D-A4C1-55D2C7F6335F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C59A96D-A13C-452D-A4C1-55D2C7F6335F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C59A96D-A13C-452D-A4C1-55D2C7F6335F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C558AC16-89F2-4083-9E0A-C7BAD7B52B8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C558AC16-89F2-4083-9E0A-C7BAD7B52B8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C558AC16-89F2-4083-9E0A-C7BAD7B52B8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C558AC16-89F2-4083-9E0A-C7BAD7B52B8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A99C63E-47C3-407B-B58F-C7A07206563F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A99C63E-47C3-407B-B58F-C7A07206563F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A99C63E-47C3-407B-B58F-C7A07206563F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A99C63E-47C3-407B-B58F-C7A07206563F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A18F147-AFFF-4B81-8C1C-1607A233FFC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A18F147-AFFF-4B81-8C1C-1607A233FFC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A18F147-AFFF-4B81-8C1C-1607A233FFC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A18F147-AFFF-4B81-8C1C-1607A233FFC8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
