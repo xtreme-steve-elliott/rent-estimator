@@ -8,7 +8,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace rent_estimator.Controllers;
 
-[Microsoft.AspNetCore.Components.Route("accounts")]
+[Route("accounts")]
 public class AccountController : ApiControllerBase, IAccountController
 {
     private readonly IMediator _mediator;
