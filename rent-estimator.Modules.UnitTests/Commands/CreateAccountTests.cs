@@ -24,7 +24,7 @@ public class CreateAccountTests
     [Fact]
     public async Task CreateAccountCommandHandler_Handle_ShouldInvokeAccountDAOAndReturnCreateAccountResponse()
     {
-        var id = Guid.NewGuid();
+        var id = Guid.NewGuid().ToString();
         //Arrange
         var requestBody = new CreateAccountRequest
         {

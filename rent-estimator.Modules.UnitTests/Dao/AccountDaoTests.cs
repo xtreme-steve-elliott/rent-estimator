@@ -33,13 +33,11 @@ public class AccountDaoTests
         //arrange
         var accountModel = new AccountModel
         {
-            Id = Guid.NewGuid(),
+            Id = Guid.NewGuid().ToString(),
             Username = "TestUsername",
             Password = "TestPassword",
             FirstName = "John",
-            LastName = "Testerson",
-            CreatedAt = DateTime.Now,
-            LastUpdatedAt = DateTime.Now
+            LastName = "Testerson"
         };
         var param = new
         {
@@ -48,8 +46,6 @@ public class AccountDaoTests
             Password =accountModel.Password,
             FirstName = accountModel.FirstName,
             LastName = accountModel.LastName,
-            CreatedAt = accountModel.CreatedAt,
-            LastUpdatedAt = accountModel.LastUpdatedAt
         };
         var sqlQuery = _accountSql.CreateAccountSql();
         
@@ -69,13 +65,11 @@ public class AccountDaoTests
         //arrange
         var accountModel = new AccountModel
         {
-            Id = Guid.NewGuid(),
+            Id = Guid.NewGuid().ToString(),
             Username = "TestUsername",
             Password = "TestPassword",
             FirstName = "John",
             LastName = "Testerson",
-            CreatedAt = DateTime.Now,
-            LastUpdatedAt = DateTime.Now
         };
         var sqlQuery = _accountSql.CreateAccountSql();
 
