@@ -1,0 +1,9 @@
+version: '3.7'
+
+services:
+  rentdb:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    ports:
+      - "14330:1433"

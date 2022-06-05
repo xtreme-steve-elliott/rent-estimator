@@ -1,5 +1,3 @@
-using System.Linq;
-using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -8,9 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using rent_estimator.Controllers;
 using rent_estimator.Modules.Account.Commands;
-using rent_estimator.Shared.Documentation;
 using rent_estimator.Shared.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
 using Xunit;
 
 namespace rent_estimator.Application.UnitTests.Controllers;
@@ -48,7 +44,6 @@ public class AccountControllerTests
         //act
         var response = await _accountController.CreateAsync(
             new CreateAccountRequest(),
-            new StandardRequestHeader(),
             new CancellationToken()
         );
 
@@ -67,21 +62,9 @@ public class AccountControllerTests
                 new[]
                 {
                     typeof(CreateAccountRequest),
-                    typeof(StandardRequestHeader),
                     typeof(CancellationToken)
                 });
 
         constraint.Which.Should().BeDecoratedWith<HttpPostAttribute>(r => r.Name == "CreateAccount", "required HttpPost with CreateAsync route");
-
-        constraint.Which.Should().BeDecoratedWith<SwaggerOperationAttribute>(s => s.Summary == "Creates Account with request body parameter", "required SwaggerOperationAttribute");
-
-        foreach (var code in new[] { 200 })
-        {
-            constraint.Which.Should().BeDecoratedWith<SwaggerCustomResponseAttribute>(p =>
-                p.StatusCode.Equals(code)
-                && p.Type.IsAssignableTo(typeof(CreateAccountResponse))
-                && p.HeaderType.IsAssignableTo(typeof(StandardResponseHeader))
-                && p.ContentTypes.Contains(MediaTypeNames.Application.Json), $"required SwaggerCustomResponseAttribute");
-        }
     }
 }
