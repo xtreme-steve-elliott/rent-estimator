@@ -5,9 +5,9 @@ namespace rent_estimator.Modules.Account.Dao;
 public class AccountDao : IAccountDao
 {
     private readonly IDapperWrapper _dbConnection;
-    private readonly AccountSql _accountSql;
+    private readonly IAccountSql _accountSql;
 
-    public AccountDao(IDapperWrapper dbConnection, AccountSql accountSql)
+    public AccountDao(IDapperWrapper dbConnection, IAccountSql accountSql)
     {
         _dbConnection = dbConnection;
         _accountSql = accountSql;
@@ -22,9 +22,7 @@ public class AccountDao : IAccountDao
             Username =account.Username,
             Password =account.Password,
             FirstName = account.FirstName,
-            LastName = account.LastName,
-            CreatedAt = account.CreatedAt,
-            LastUpdatedAt = account.LastUpdatedAt
+            LastName = account.LastName
         };
         return await _dbConnection.QueryFirstAsync<AccountModel>(sql, param);
     }

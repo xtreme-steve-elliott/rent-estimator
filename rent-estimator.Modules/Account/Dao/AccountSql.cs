@@ -12,18 +12,14 @@ public class AccountSql : IAccountSql
                                  [LastName], 
                                  [Username],
                                  [Password]
-                                 [CreatedAt]
-                                 [LastUpdatedAt]
                                 )
-                                OUTPUT inserted.Id, inserted.FirstName, inserted.LastName, inserted.Username, inserted.Password, inserted.CreatedAt, inserted.LastUpdatedAt
+                                OUTPUT inserted.Id, inserted.FirstName, inserted.LastName, inserted.Username, inserted.Password
                                 VALUES 
                                 (@Id, 
                                  @FirstName, 
                                  @LastName, 
                                  @Username,
                                  @Password
-                                 @CreatedAt
-                                 @LastUpdatedAt
                                 )";
     }
 }

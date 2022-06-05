@@ -1,9 +1,24 @@
+using System.Data;
+using System.Data.SqlClient;
 using MediatR;
 using rent_estimator.Modules.Account.Commands;
+using rent_estimator.Modules.Account.Dao;
+using rent_estimator.Shared.Dapper;
+
+var requiredEnvironmentVariables = new[] {"DB_PASSWORD"};
+CheckEnvironmentVariablesExist(requiredEnvironmentVariables);
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddTransient(c => GetSqlConnection(builder.Configuration));
+builder.Services.AddSingleton<IDapperWrapper, DapperWrapper>();
+builder.Services.AddSingleton<IAccountSql, AccountSql>();
+builder.Services.AddSingleton<IAccountDao>(dao => 
+    new AccountDao(
+        dao.GetRequiredService<IDapperWrapper>(), 
+        dao.GetRequiredService<IAccountSql>())
+);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -27,3 +42,28 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+static void CheckEnvironmentVariablesExist(IEnumerable<string> envVars)
+{
+    foreach (var envVar in envVars)
+        GetEnvironmentVariableOrThrow(envVar);
+}
+
+static IDbConnection GetSqlConnection(IConfiguration configuration)
+{
+    var connectionStringBuilder = new SqlConnectionStringBuilder(configuration.GetConnectionString("rentEstimatorDB"))
+        {
+            Password = GetEnvironmentVariableOrThrow("DB_PASSWORD")
+        };
+
+    return new SqlConnection(connectionStringBuilder.ConnectionString);
+}
+
+static string GetEnvironmentVariableOrThrow(string envVarName)
+{
+    var value = Environment.GetEnvironmentVariable(envVarName);
+
+    if (value != null) return value;
+
+    throw new Exception($"Please set the environment variable '{envVarName}' on your machine");
+}

@@ -33,7 +33,7 @@ public class CreateAccountResponse: StandardResponse
 {
     [SwaggerSchema(Description = "Identifier for the created user account", Format = "xxxxx", ReadOnly = true)]
     [SwaggerSchemaExample("e1f30249-bbba-4544-9f26-605c050294d8")]
-    public Guid Id { get; set; }
+    public string Id { get; set; }
     
     [SwaggerSchema(Description = "First name of created user", Format = "xxxxx", ReadOnly = true)]
     [SwaggerSchemaExample("John")]
@@ -60,13 +60,11 @@ public class CreateAccountCommandHandler: IRequestHandler<CreateAccountRequest, 
     {
         var accountToSave = new AccountModel
         {
-            Id = Guid.NewGuid(),
+            Id = Guid.NewGuid().ToString(),
             Username = request.Username,
             Password = request.Password,
             FirstName = request.FirstName,
-            LastName = request.LastName,
-            CreatedAt = DateTime.Now,
-            LastUpdatedAt = DateTime.Now
+            LastName = request.LastName
         };
 
         var savedAccount = await _accountDao.CreateAccount(accountToSave);
