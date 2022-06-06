@@ -1,9 +1,12 @@
 using System.Data;
 using System.Data.SqlClient;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using MediatR;
 using rent_estimator.Modules.Account.Commands;
 using rent_estimator.Modules.Account.Dao;
 using rent_estimator.Shared.Dapper;
+using rent_estimator.Shared.Mvc.Validation;
 
 var requiredEnvironmentVariables = new[] {"DB_PASSWORD"};
 CheckEnvironmentVariablesExist(requiredEnvironmentVariables);
@@ -19,8 +22,11 @@ builder.Services.AddSingleton<IAccountDao>(dao =>
         dao.GetRequiredService<IDapperWrapper>(), 
         dao.GetRequiredService<IAccountSql>())
 );
+builder.Services.AddSingleton<IValidatorWrapper<CreateAccountRequest>, ValidatorWrapper<CreateAccountRequest>>();
+builder.Services.AddTransient<IValidator<CreateAccountRequest>, CreateAccountRequestValidator>();
+builder.Services.AddSingleton(typeof(CreateAccountRequestValidator));
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

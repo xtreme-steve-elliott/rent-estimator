@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using rent_estimator.Modules.Account.Commands;
 using rent_estimator.Shared.Mvc;
+using rent_estimator.Shared.Mvc.Validation;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace rent_estimator.Controllers;
@@ -10,9 +11,11 @@ namespace rent_estimator.Controllers;
 public class AccountController : ApiControllerBase, IAccountController
 {
     private readonly IMediator _mediator;
+    private readonly IValidatorWrapper<CreateAccountRequest> _validator;
 
-    public AccountController(IMediator mediator) {
+    public AccountController(IMediator mediator, IValidatorWrapper<CreateAccountRequest> validator) {
         _mediator = mediator;
+        _validator = validator;
     }
     
     [HttpPost(Name = "CreateAccount")]
@@ -20,7 +23,13 @@ public class AccountController : ApiControllerBase, IAccountController
     public async Task<ActionResult<CreateAccountResponse>> CreateAsync(
         [FromBody] CreateAccountRequest request,
         CancellationToken cancellationToken
-    ) {
+    )
+    {
+        var results = await _validator.Validate(request, cancellationToken);
+        if (!results.IsValid)
+        {
+            return new BadRequestObjectResult(results.Errors);
+        }
         return new OkObjectResult(await _mediator.Send(request, cancellationToken));
     }
 
