@@ -24,7 +24,6 @@ builder.Services.AddSingleton<IAccountDao>(dao =>
 );
 builder.Services.AddSingleton<IValidatorWrapper<CreateAccountRequest>, ValidatorWrapper<CreateAccountRequest>>();
 builder.Services.AddTransient<IValidator<CreateAccountRequest>, CreateAccountRequestValidator>();
-builder.Services.AddSingleton(typeof(CreateAccountRequestValidator));
 
 builder.Services.AddControllers().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
