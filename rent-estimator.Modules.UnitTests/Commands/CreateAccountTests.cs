@@ -61,6 +61,8 @@ public class CreateAccountTests
     [InlineData("Valid_Username-1", "Valid_Password-1", true, null)]
     [InlineData("InvalidUsername-1$#", "Valid_Password-1", false, "Username is not valid. Only ['A', 'a', '1', '-', '_'] are allowed.")]
     [InlineData("Valid_Username-1", "Invalid_Password-1#$", false, "Password is not valid. Only ['A', 'a', '1', '-', '_'] are allowed.")]
+    [InlineData("", "Valid_Password-1", false, "Username must not be empty.")]
+    [InlineData("Valid_Username-1", "", false, "Password must not be empty.")]
     public async Task CreateAccountRequestValidator_ValidatesRequestPossibilities(
             string username,
             string password,

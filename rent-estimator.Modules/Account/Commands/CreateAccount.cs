@@ -85,9 +85,17 @@ public class CreateAccountRequestValidator : AbstractValidator<CreateAccountRequ
         RuleFor(p => p.Password)
             .Matches("^[a-zA-Z0-9_-]*$")
             .WithMessage("{PropertyName} is not valid. Only ['A', 'a', '1', '-', '_'] are allowed.");
+
+        RuleFor(p => p.Password)
+            .NotEmpty()
+            .WithMessage("Password must not be empty.");
         
         RuleFor(p => p.Username)
             .Matches("^[a-zA-Z0-9_-]*$")
             .WithMessage("{PropertyName} is not valid. Only ['A', 'a', '1', '-', '_'] are allowed.");
+        
+        RuleFor(p => p.Username)
+            .NotEmpty()
+            .WithMessage("Username must not be empty.");
     }
 }
