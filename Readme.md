@@ -1,4 +1,16 @@
-#rent-estimator
+# rent-estimator
+
+## Technologies used
+
+- .Net Core / C#
+- MediatR
+- Dapper
+- Microsoft Sql Server
+- Fluent Assertions
+- Fluent Validations
+- Moq
+- Xunit
+
 
 ## Getting started
  - Run `dotnet restore` from solution dir to download dependencies
