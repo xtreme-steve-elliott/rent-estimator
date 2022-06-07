@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rent-estimator.Shared", "re
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rent-estimator.Shared.UnitTests", "rent-estimator.Shared.UnitTests\rent-estimator.Shared.UnitTests.csproj", "{5A18F147-AFFF-4B81-8C1C-1607A233FFC8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rent-estimator.IntegrationTests", "rent-estimator.IntegrationTests\rent-estimator.IntegrationTests.csproj", "{7551C35A-DBFB-4A16-8122-66F3F6A1C5C7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +50,9 @@ Global
 		{5A18F147-AFFF-4B81-8C1C-1607A233FFC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A18F147-AFFF-4B81-8C1C-1607A233FFC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A18F147-AFFF-4B81-8C1C-1607A233FFC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7551C35A-DBFB-4A16-8122-66F3F6A1C5C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7551C35A-DBFB-4A16-8122-66F3F6A1C5C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7551C35A-DBFB-4A16-8122-66F3F6A1C5C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7551C35A-DBFB-4A16-8122-66F3F6A1C5C7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
