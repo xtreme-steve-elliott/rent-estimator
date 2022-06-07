@@ -1,14 +1,12 @@
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using rent_estimator.Controllers;
 using rent_estimator.Modules.Account.Commands;
 using rent_estimator.Shared.Mvc;
-using rent_estimator.Shared.Mvc.Validation;
 using Xunit;
 
 namespace rent_estimator.Application.UnitTests.Controllers;
@@ -16,14 +14,12 @@ namespace rent_estimator.Application.UnitTests.Controllers;
 public class AccountControllerTests
 {
     private readonly Mock<IMediator> _mediator;
-    private readonly Mock<IValidatorWrapper<CreateAccountRequest>> _validator;
     private readonly AccountController _accountController;
 
     public AccountControllerTests()
     {
-        _validator = new Mock<IValidatorWrapper<CreateAccountRequest>>();
         _mediator = new Mock<IMediator>();
-        _accountController = new AccountController(_mediator.Object, _validator.Object);
+        _accountController = new AccountController(_mediator.Object);
     }
 
     [Fact]
@@ -34,10 +30,14 @@ public class AccountControllerTests
     }
 
     [Fact]
-    public async Task CreateAsync_ShouldInvokeMediator_AndReturnCreateAccountResponse()
+    public async Task CreateAsync_WhenValidRequestShouldInvokeMediator_AndReturnCreateAccountResponse()
     {
-        
         //arrange
+        var request = new CreateAccountRequest
+        {
+            Username = "validUsername",
+            Password = "validPassword"
+        };
         var expected = new CreateAccountResponse
         {
             Username = "Tester1",
@@ -45,17 +45,14 @@ public class AccountControllerTests
             Status = "Success"
         };
         _mediator.Setup(m =>
-            m.Send<CreateAccountResponse>(
+            m.Send(
                 It.IsAny<CreateAccountRequest>(),
                 It.IsAny<CancellationToken>()
             )).ReturnsAsync(expected);
 
-        _validator.Setup(v => v.Validate(It.IsAny<CreateAccountRequest>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new ValidationResult());
-
         //act
         var response = await _accountController.CreateAsync(
-            new CreateAccountRequest(),
+            request,
             new CancellationToken()
         );
 
@@ -86,19 +83,29 @@ public class AccountControllerTests
     }
 
     [Fact]
-    public void CreateAsync_shouldInvokeValidator()
+    public async void CreateAsync_WhenInvalidRequest_Returns400WithErrorMessage()
     {
-        // Arrange
-        var createAccountRequest = new CreateAccountRequest
+        //arrange
+        var invalidRequest = new CreateAccountRequest
         {
-            Username = "PasswordCantBeEmpty",
+            Username = "PasswordIsInvalid",
             Password = ""
         };
-        
-        //Act
-        _accountController.CreateAsync(createAccountRequest, default);
+
+        //act
+        var response = await _accountController.CreateAsync(
+            invalidRequest,
+            new CancellationToken()
+        );
 
         //Assert
-        _validator.Verify(v => v.Validate(createAccountRequest, default), Times.Once);
+        response.Result.Should().BeAssignableTo<BadRequestObjectResult>();
+        var result = response.Result as BadRequestObjectResult;
+        result?.StatusCode.Should().Be(400);
+
+        _mediator.Verify(m => m.Send(
+                It.IsAny<CreateAccountRequest>(),
+                It.IsAny<CancellationToken>()),
+            Times.Never);
     }
 }
