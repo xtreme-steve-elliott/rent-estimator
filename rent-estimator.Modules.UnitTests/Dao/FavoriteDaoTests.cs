@@ -33,15 +33,18 @@ public class FavoriteDaoTests
         //arrange
         var accountId = Guid.NewGuid().ToString();
         var favoriteId = Guid.NewGuid().ToString();
+        const string propertyId = "M7952539079";
         var favoriteModel = new FavoriteModel
         {
             id = favoriteId,
-            accountId = accountId
+            accountId = accountId,
+            propertyId = propertyId
         }; 
         var param = new 
         {
             id = favoriteId,
-            accountId
+            accountId,
+            propertyId
         };
         var query = _favoriteSql.CreateFavoriteSql();
 
@@ -58,15 +61,18 @@ public class FavoriteDaoTests
         //arrange
         var accountId = Guid.NewGuid().ToString();
         var favoriteId = Guid.NewGuid().ToString();
+        const string propertyId = "M7952539079";
         var favoriteModel = new FavoriteModel
         {
             id = favoriteId,
-            accountId = accountId
+            accountId = accountId,
+            propertyId = propertyId
         }; 
         var param = new 
         {
             id = favoriteId,
-            accountId = accountId
+            accountId,
+            propertyId
         };
         var query = _favoriteSql.CreateFavoriteSql();
         _db.Setup(db => db.QueryFirstAsync<FavoriteModel>(query, It.Is<object>(p => JsonConvert.SerializeObject(param) == JsonConvert.SerializeObject(p)))).ReturnsAsync(favoriteModel);

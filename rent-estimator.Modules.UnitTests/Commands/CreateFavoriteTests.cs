@@ -28,19 +28,23 @@ public class CreateFavoriteTests
         //arrange
         var accountId = Guid.NewGuid().ToString();
         var favoriteId = Guid.NewGuid().ToString();
+        const string propertyId = "M7952539079";
         var requestFavorite = new CreateFavoriteRequest
         {
-            accountId = accountId
+            accountId = accountId,
+            propertyId = propertyId
         };
         var expected = new CreateFavoriteResponse
         {
             id = favoriteId,
-            accountId = accountId
+            accountId = accountId,
+            propertyId = propertyId
         };
         var favoriteModel = new FavoriteModel
         {
             id = favoriteId,
-            accountId = accountId
+            accountId = accountId,
+            propertyId = propertyId
         };
         _favoriteDao.Setup(dao => dao.CreateFavorite(It.IsAny<FavoriteModel>())).ReturnsAsync(favoriteModel);
 
@@ -53,10 +57,12 @@ public class CreateFavoriteTests
     }
     
     [Theory]
-    [InlineData("valid-account-id", true, null)]
-    [InlineData("", false, "AccountId must not be empty.")]
+    [InlineData("valid-account-id", "M7952539079", true, null)]
+    [InlineData("", "M7952539079", false, "AccountId must not be empty.")]
+    [InlineData("valid-account-id", "", false, "PropertyId must not be empty.")]
     public async Task CreateAccountRequestValidator_ValidatesRequestPossibilities(
         string accountId,
+        string propertyId,
         bool isValid,
         string errorMessage
     )
@@ -64,7 +70,8 @@ public class CreateFavoriteTests
         //Arrange
         var request = new CreateFavoriteRequest
         {
-            accountId = accountId
+            accountId = accountId,
+            propertyId = propertyId
         };
         
         //Act

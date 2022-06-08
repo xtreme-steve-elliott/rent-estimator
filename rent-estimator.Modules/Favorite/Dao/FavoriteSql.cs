@@ -8,12 +8,14 @@ public class FavoriteSql: IFavoriteSql
     {
         return @"INSERT INTO [dbo].[Favorite]
                                 ([Id], 
-                                 [AccountId]
+                                 [AccountId],
+                                 [PropertyId]
                                 )
-                                OUTPUT inserted.Id, inserted.AccountId
+                                OUTPUT inserted.Id, inserted.AccountId, inserted.PropertyId
                                 VALUES 
                                 (@Id, 
-                                 @AccountId
+                                 @AccountId,
+                                 @PropertyId
                                 )";
     }
 }

@@ -14,6 +14,11 @@ public class CreateFavoriteRequest: IRequest<CreateFavoriteResponse>
     [SwaggerSchemaExample("e1f30249-bbba-4544-9f26-605c050294d8")]
     [Required]
     public string accountId { get; set; }
+    
+    [SwaggerSchema(Description = "PropertyId for the favorite being created", Format = "xxxxx", ReadOnly = true)]
+    [SwaggerSchemaExample("M7952539079")]
+    [Required]
+    public string propertyId { get; set; }
 }
 
 public class CreateFavoriteResponse: StandardResponse
@@ -25,6 +30,10 @@ public class CreateFavoriteResponse: StandardResponse
     [SwaggerSchema(Description = "Identifier for the user's account", Format = "xxxxx", ReadOnly = true)]
     [SwaggerSchemaExample("e1f30249-bbba-4544-9f26-605c050294d8")]
     public string accountId { get; set; }
+    
+    [SwaggerSchema(Description = "Identifier for the 'favorited' piece of real estate", Format = "xxxxx", ReadOnly = true)]
+    [SwaggerSchemaExample("M7952539079")]
+    public string propertyId { get; set; }
 }
 
 public class CreateFavoriteCommandHandler: IRequestHandler<CreateFavoriteRequest, CreateFavoriteResponse>
@@ -41,13 +50,15 @@ public class CreateFavoriteCommandHandler: IRequestHandler<CreateFavoriteRequest
         var modelToSave = new FavoriteModel
         {
             id = Guid.NewGuid().ToString(),
-            accountId = request.accountId
+            accountId = request.accountId,
+            propertyId = request.propertyId
         };
         var savedFavorite = await _dao.CreateFavorite(modelToSave);
         return new CreateFavoriteResponse
         {
             id = savedFavorite.id,
-            accountId = savedFavorite.accountId
+            accountId = savedFavorite.accountId,
+            propertyId = savedFavorite.propertyId
         };
     }
 }
@@ -59,5 +70,9 @@ public class CreateFavoriteRequestValidator : AbstractValidator<CreateFavoriteRe
         RuleFor(p => p.accountId)
             .NotEmpty()
             .WithMessage("AccountId must not be empty.");
+
+        RuleFor(p => p.propertyId)
+            .NotEmpty()
+            .WithMessage("PropertyId must not be empty.");
     }
 }

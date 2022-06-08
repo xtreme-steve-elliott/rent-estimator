@@ -18,7 +18,8 @@ public class FavoriteDao : IFavoriteDao
         var param = new
         {
             id = model.id,
-            accountId = model.accountId
+            accountId = model.accountId,
+            propertyId = model.propertyId
         };
         return await _dbConnection.QueryFirstAsync<FavoriteModel>(_favoriteSql.CreateFavoriteSql(), param);
     }

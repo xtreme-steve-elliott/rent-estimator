@@ -49,14 +49,17 @@ public class FavoriteControllerTests
         //arrange
         var accountId = Guid.NewGuid().ToString();
         var favoriteId = Guid.NewGuid().ToString();
+        const string propertyId = "M7952539079";
         var validRequest = new CreateFavoriteRequest
         {
-            accountId = accountId
+            accountId = accountId,
+            propertyId = propertyId
         };
         var expected = new CreateFavoriteResponse
         {
             id = favoriteId,
             accountId = accountId,
+            propertyId = propertyId,
             Status = "Success"
         };
         _mediator.Setup(m =>
