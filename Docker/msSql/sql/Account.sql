@@ -7,7 +7,7 @@ CREATE TABLE Account
     [LastName] varchar(200) NULL,
     [Username] varchar(200) NULL,
     [Password] varchar(200) NULL,
-    CONSTRAINT PK_Item PRIMARY KEY ([Id])
+    CONSTRAINT PK_Account PRIMARY KEY ([Id])
 )
 GO
 INSERT INTO Account VALUES ('c9c51bd2-71a6-40f1-a98a-6b54481ceb47', 'George', 'Testerson', 'gtest', 'gtestpass123');

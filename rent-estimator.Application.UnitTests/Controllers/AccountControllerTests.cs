@@ -30,7 +30,21 @@ public class AccountControllerTests
     }
 
     [Fact]
-    public async Task CreateAsync_WhenValidRequestShouldInvokeMediator_AndReturnCreateAccountResponse()
+    public void CreateAccount_ShouldBeDecoratedWith()
+    {
+        var constraint = typeof(AccountController).Should()
+            .HaveMethod(nameof(AccountController.CreateAsync),
+                new[]
+                {
+                    typeof(CreateAccountRequest),
+                    typeof(CancellationToken)
+                });
+
+        constraint.Which.Should().BeDecoratedWith<HttpPostAttribute>(r => r.Name == "CreateAccount", "required HttpPost with CreateAsync route");
+    }
+    
+    [Fact]
+    public async Task CreateAsync_WhenRequestIsValid_ShouldInvokeMediatorAndReturnCreateAccountResponse()
     {
         //arrange
         var request = new CreateAccountRequest
@@ -66,20 +80,6 @@ public class AccountControllerTests
                 It.IsAny<CreateAccountRequest>(),
                 It.IsAny<CancellationToken>()),
             Times.Once);
-    }
-    
-    [Fact]
-    public void CreateAccount_ShouldBeDecoratedWith()
-    {
-        var constraint = typeof(AccountController).Should()
-            .HaveMethod(nameof(AccountController.CreateAsync),
-                new[]
-                {
-                    typeof(CreateAccountRequest),
-                    typeof(CancellationToken)
-                });
-
-        constraint.Which.Should().BeDecoratedWith<HttpPostAttribute>(r => r.Name == "CreateAccount", "required HttpPost with CreateAsync route");
     }
 
     [Fact]

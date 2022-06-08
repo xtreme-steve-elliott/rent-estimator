@@ -5,6 +5,7 @@ using FluentValidation.AspNetCore;
 using MediatR;
 using rent_estimator.Modules.Account.Commands;
 using rent_estimator.Modules.Account.Dao;
+using rent_estimator.Modules.Favorite.Dao;
 using rent_estimator.Shared.Dapper;
 
 var requiredEnvironmentVariables = new[] {"DB_PASSWORD"};
@@ -20,6 +21,12 @@ builder.Services.AddSingleton<IAccountDao>(dao =>
     new AccountDao(
         dao.GetRequiredService<IDapperWrapper>(), 
         dao.GetRequiredService<IAccountSql>())
+);
+builder.Services.AddSingleton<IFavoriteSql, FavoriteSql>();
+builder.Services.AddSingleton<IFavoriteDao>(dao => 
+    new FavoriteDao(
+        dao.GetRequiredService<IDapperWrapper>(), 
+        dao.GetRequiredService<IFavoriteSql>())
 );
 
 builder.Services.AddTransient<IValidator<CreateAccountRequest>, CreateAccountRequestValidator>();

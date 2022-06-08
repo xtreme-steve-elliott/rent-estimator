@@ -22,7 +22,7 @@ public class CreateAccountTests
     }
 
     [Fact]
-    public async Task CreateAccountCommandHandler_Handle_ShouldInvokeAccountDAOAndReturnCreateAccountResponse()
+    public async Task CreateAccountCommandHandler_Handle_ShouldInvokeAccountDaoAndReturnCreateAccountResponse()
     {
         var id = Guid.NewGuid().ToString();
         //Arrange

@@ -16,7 +16,7 @@
  - Run `dotnet restore` from solution dir to download dependencies
 
 
- - Run `cd Docker/msSql` and then `docker compose up -d` to start mssql db
+ - Run `cd Docker/msSql` and then `docker compose up -d` to build image & start mssql db container
  
 
  - Run `cd rent-estimator.Application` and then `dotnet run` to start application and open swagger-ui
