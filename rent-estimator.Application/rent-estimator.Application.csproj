@@ -1,10 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>rent_estimator</RootNamespace>
+    <UserSecretsId>acbb043b-0967-4e70-8446-0a67c307ba3c</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
