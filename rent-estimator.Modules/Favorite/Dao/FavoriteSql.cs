@@ -18,9 +18,15 @@ public class FavoriteSql: IFavoriteSql
                                  @PropertyId
                                 )";
     }
+
+    public string GetFavoritesSql()
+    {
+        return @"Select * from [dbo].[Favorite] where accountId = @accountId";
+    }
 }
 
 public interface IFavoriteSql
 {
     string CreateFavoriteSql();
+    string GetFavoritesSql();
 }

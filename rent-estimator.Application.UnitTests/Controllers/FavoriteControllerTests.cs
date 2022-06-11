@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using FluentAssertions;
 using MediatR;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using rent_estimator.Controllers;
 using rent_estimator.Modules.Favorite.Commands;
+using rent_estimator.Modules.Favorite.Queries;
 using rent_estimator.Shared.Mvc;
 using Xunit;
 
@@ -23,7 +25,7 @@ public class FavoriteControllerTests
     }
     
     [Fact]
-    public void CreateFavorite_ShouldBeOfTypeIFavoriteControllerAndApiControllerBase()
+    public void FavoriteController_ShouldBeOfTypeIFavoriteControllerAndApiControllerBase()
     {
         _controller.Should().BeAssignableTo<IFavoriteController>();
         _controller.Should().BeAssignableTo<ApiControllerBase>();
@@ -87,7 +89,6 @@ public class FavoriteControllerTests
     public async void CreateFavorite_WhenRequestIsInvalid_RespondsWith400AndErrorMessage()
     {
         //arrange
-        var accountId = Guid.NewGuid().ToString();
         var invalidRequest = new CreateFavoriteRequest();
 
         //act
@@ -105,5 +106,45 @@ public class FavoriteControllerTests
                 It.IsAny<CreateFavoriteRequest>(),
                 It.IsAny<CancellationToken>()),
             Times.Never);
+    }
+
+    [Fact]
+    public async void GetFavorites_WhenRequestIsValid_InvokesMediatRAndRespondsWithGetFavoritesResponse()
+    {
+        //arrange
+        var accountId = Guid.NewGuid().ToString();
+        var id = Guid.NewGuid().ToString();
+        const string propertyId = "M7952539079";
+        var favorite = new Favorite
+        {
+            id = id,
+            propertyId = propertyId,
+            accountId = accountId
+        };
+        var favorites = new List<Favorite> { favorite };
+        var expected = new GetFavoritesResponse
+        {
+            favorites = favorites,
+            Status = "Success"
+        };
+        _mediator.Setup(m =>
+            m.Send(
+                It.IsAny<GetFavoritesRequest>(),
+                It.IsAny<CancellationToken>()
+            )).ReturnsAsync(expected);
+
+        //act
+        var response = await _controller.GetFavorites(accountId, new CancellationToken());
+
+        //assert
+        response.Result.Should().BeAssignableTo<OkObjectResult>();
+        var result = response.Result as OkObjectResult;
+
+        result?.Value.Should().BeSameAs(expected);
+        
+        _mediator.Verify(m => m.Send(
+                It.IsAny<GetFavoritesRequest>(),
+                It.IsAny<CancellationToken>()),
+            Times.Once);
     }
 }

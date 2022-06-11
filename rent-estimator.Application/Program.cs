@@ -19,12 +19,11 @@ builder.Services.AddHttpClient(nameof(RentEstimatorClient),
     client =>
     {
         client.BaseAddress = new Uri(builder.Configuration.GetSection("ServiceClients")["RentEstimatorApi:BaseUri"]);
+        client.DefaultRequestHeaders.Add("X-RapidAPI-Host", builder.Configuration.GetSection("ServiceClients")["RentEstimatorApi:BaseUri"]);
+        client.DefaultRequestHeaders.Add("X-RapidAPI-Key", builder.Configuration.GetSection("ServiceClients")["RentEstimatorApi:Key"]);
     });
 builder.Services.AddSingleton<IRentEstimatorClient>(client =>
-    new RentEstimatorClient(
-        client.GetRequiredService<IHttpClientFactory>(), 
-        builder.Configuration.GetSection("ServiceClients")["RentEstimatorApi:Key"]
-    )
+    new RentEstimatorClient(client.GetRequiredService<IHttpClientFactory>())
 );
 
 builder.Services.AddTransient(c => GetSqlConnection(builder.Configuration));

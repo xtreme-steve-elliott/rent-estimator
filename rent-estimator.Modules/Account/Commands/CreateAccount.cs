@@ -20,12 +20,10 @@ public class CreateAccountRequest: IRequest<CreateAccountResponse>
     
     [SwaggerSchema(Description = "Username for the new user", Format = "xxxxx", ReadOnly = true)]
     [SwaggerSchemaExample("testuser123")]
-    [Required]
     public string Username { get; set; }
     
     [SwaggerSchema(Description = "Password for the new user", Format = "xxxxx", ReadOnly = true)]
     [SwaggerSchemaExample("_Secret-Password.123")]
-    [Required]
     public string Password { get; set; }
 }
 

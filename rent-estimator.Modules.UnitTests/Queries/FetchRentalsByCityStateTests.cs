@@ -37,14 +37,14 @@ public class FetchRentalsByCityStateTests
         {
             content = content
         };
-        _client.Setup(client => client.FetchRentalListingsByCityState(city, stateAbbrev)).ReturnsAsync(content);
+        _client.Setup(client => client.FetchRentalsByCityState(city, stateAbbrev)).ReturnsAsync(content);
         
         //act
         var response = await _handler.Handle(request, new CancellationToken());
         
         //assert
         response.Should().BeEquivalentTo(expected);
-        _client.Verify(client => client.FetchRentalListingsByCityState(city, stateAbbrev), Times.Once);
+        _client.Verify(client => client.FetchRentalsByCityState(city, stateAbbrev), Times.Once);
     }
     
     [Theory]

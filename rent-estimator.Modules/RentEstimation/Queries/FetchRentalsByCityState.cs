@@ -35,7 +35,7 @@ public class FetchRentalsByCityStateHandler : IRequestHandler<FetchRentalsByCity
     
     public async Task<FetchRentalsByCityStateResponse> Handle(FetchRentalsByCityStateRequest request, CancellationToken token)
     {
-        var content = await _client.FetchRentalListingsByCityState(request.city, request.stateAbbrev);
+        var content = await _client.FetchRentalsByCityState(request.city, request.stateAbbrev);
         return new FetchRentalsByCityStateResponse { content = content };
     }
 }

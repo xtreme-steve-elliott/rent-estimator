@@ -17,15 +17,22 @@ public class FavoriteDao : IFavoriteDao
     {
         var param = new
         {
-            id = model.id,
-            accountId = model.accountId,
-            propertyId = model.propertyId
+            model.id,
+            model.accountId,
+            model.propertyId
         };
         return await _dbConnection.QueryFirstAsync<FavoriteModel>(_favoriteSql.CreateFavoriteSql(), param);
+    }
+
+    public async Task<IEnumerable<FavoriteModel>> GetFavorites(string accountId)
+    {
+        var param = new { accountId };
+        return await _dbConnection.QueryAsync<FavoriteModel>(_favoriteSql.GetFavoritesSql(), param);
     }
 }
 
 public interface IFavoriteDao
 {
     Task<FavoriteModel> CreateFavorite(FavoriteModel model);
+    Task<IEnumerable<FavoriteModel>> GetFavorites(string accountId);
 }

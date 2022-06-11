@@ -34,12 +34,14 @@ public class DapperWrapperTests
             "Apples"
         };
 
+        var param = new { };
+
         dbConnection.SetupDapperAsync(dbConn =>
-                dbConn.QueryAsync<string>(sqlQuery, null, null, null, It.IsAny<CommandType>()))
+                dbConn.QueryAsync<string>(sqlQuery, param, null, null, It.IsAny<CommandType>()))
             .ReturnsAsync(expected);
 
         // Act
-        var result = await sut.QueryAsync<string>(sqlQuery);
+        var result = await sut.QueryAsync<string>(sqlQuery, param);
 
         // Assert
         result.Should().BeEquivalentTo(expected);

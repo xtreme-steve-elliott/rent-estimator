@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using FluentAssertions;
 using Moq;
 using Newtonsoft.Json;
@@ -28,7 +29,7 @@ public class FavoriteDaoTests
     }
 
     [Fact]
-    public async void AccountDao_WhenQueryRuns_InvokesDbConnection()
+    public async void FavoriteDao_WhenCreateFavoriteQueryRuns_InvokesDbConnection()
     {
         //arrange
         var accountId = Guid.NewGuid().ToString();
@@ -56,7 +57,7 @@ public class FavoriteDaoTests
     }
     
     [Fact]
-    public async void AccountDao_CreateAccount_SavesAndReturnsCreatedAccount()
+    public async void FavoriteDao_CreateAccount_SavesAndReturnsCreatedAccount()
     {
         //arrange
         var accountId = Guid.NewGuid().ToString();
@@ -82,5 +83,45 @@ public class FavoriteDaoTests
 
         //assert
         savedModel.Should().BeEquivalentTo(favoriteModel);
+    }
+
+    [Fact]
+    public async void FavoriteDao_WhenGetFavoritesQueryRuns_InvokesDbConnection()
+    {
+        //arrange
+        var accountId = Guid.NewGuid().ToString();
+        var param = new { accountId };
+        var query = _favoriteSql.GetFavoritesSql();
+
+        //act
+        await _favoriteDao.GetFavorites(accountId);
+
+        //assert
+        _db.Verify(db => db.QueryAsync<FavoriteModel>(query, It.Is<object>(p => JsonConvert.SerializeObject(param) == JsonConvert.SerializeObject(p))), Times.Once);
+    }
+    
+    [Fact]
+    public async void FavoriteDao_GetFavorites_ReturnsListOfFavoritesForGivenAccount()
+    {
+        //arrange
+        var accountId = Guid.NewGuid().ToString();
+        var favoriteId = Guid.NewGuid().ToString();
+        const string propertyId = "M7952539079";
+        var favoriteModel = new FavoriteModel
+        {
+            id = favoriteId,
+            accountId = accountId,
+            propertyId = propertyId
+        };
+        var models = new List<FavoriteModel>{ favoriteModel };
+        var param = new { accountId };
+        var query = _favoriteSql.GetFavoritesSql();
+        _db.Setup(db => db.QueryAsync<FavoriteModel>(query, It.Is<object>(p => JsonConvert.SerializeObject(param) == JsonConvert.SerializeObject(p)))).ReturnsAsync(models);
+
+        //act
+        var fetchedModels = await _favoriteDao.GetFavorites(accountId);
+
+        //assert
+        fetchedModels.Should().BeEquivalentTo(models);
     }
 }

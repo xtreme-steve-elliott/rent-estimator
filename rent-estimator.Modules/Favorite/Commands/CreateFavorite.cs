@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using FluentValidation;
 using MediatR;
 using rent_estimator.Modules.Favorite.Dao;
@@ -12,12 +11,10 @@ public class CreateFavoriteRequest: IRequest<CreateFavoriteResponse>
 {
     [SwaggerSchema(Description = "AccountID for the user favoriting an estimate", Format = "xxxxx", ReadOnly = true)]
     [SwaggerSchemaExample("e1f30249-bbba-4544-9f26-605c050294d8")]
-    [Required]
     public string accountId { get; set; }
     
     [SwaggerSchema(Description = "PropertyId for the favorite being created", Format = "xxxxx", ReadOnly = true)]
     [SwaggerSchemaExample("M7952539079")]
-    [Required]
     public string propertyId { get; set; }
 }
 
