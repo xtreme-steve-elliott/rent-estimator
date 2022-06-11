@@ -3,7 +3,6 @@ using System.Data.SqlClient;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MediatR;
-using rent_estimator.Controllers;
 using rent_estimator.Modules.Account.Commands;
 using rent_estimator.Modules.Account.Dao;
 using rent_estimator.Modules.Favorite.Dao;
@@ -25,9 +24,8 @@ builder.Services.AddSingleton<IRentEstimatorClient>(client =>
     new RentEstimatorClient(
         client.GetRequiredService<IHttpClientFactory>(), 
         builder.Configuration.GetSection("ServiceClients")["RentEstimatorApi:Key"]
-        )
+    )
 );
-builder.Services.AddSingleton<IRentEstimationController>(controller => new RentEstimationController(controller.GetRequiredService<IRentEstimatorClient>()));
 
 builder.Services.AddTransient(c => GetSqlConnection(builder.Configuration));
 builder.Services.AddSingleton<IDapperWrapper, DapperWrapper>();

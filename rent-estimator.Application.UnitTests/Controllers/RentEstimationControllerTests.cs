@@ -1,8 +1,8 @@
 using FluentAssertions;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using rent_estimator.Controllers;
-using rent_estimator.Modules.RentEstimation;
 using rent_estimator.Modules.RentEstimation.Queries;
 using rent_estimator.Shared.Mvc;
 using Xunit;
@@ -11,13 +11,13 @@ namespace rent_estimator.Application.UnitTests.Controllers;
 
 public class RentEstimationControllerTests
 {
-    private readonly Mock<IRentEstimatorClient> _client;
+    private readonly Mock<IMediator> _mediator;
     private readonly IRentEstimationController _controller;
 
     public RentEstimationControllerTests()
     {
-        _client = new Mock<IRentEstimatorClient>();
-        _controller = new RentEstimationController(_client.Object);
+        _mediator = new Mock<IMediator>();
+        _controller = new RentEstimationController(_mediator.Object);
     }
 
     [Fact]
@@ -40,10 +40,10 @@ public class RentEstimationControllerTests
         };
         const string content = "testContentAsString";
         var expected = new FetchRentalsByCityStateResponse {content = content};
-        _client.Setup(c => c.FetchRentalListingsByCityState(city, stateAbbrev)).ReturnsAsync(content);
+        _mediator.Setup(c => c.Send(request, default)).ReturnsAsync(expected);
 
         //act
-        var response = await _controller.FetchRentalsByCityState(request);
+        var response = await _controller.FetchRentalsByCityState(request, default);
 
         //assert
         response.Result.Should().BeAssignableTo<OkObjectResult>();
@@ -51,7 +51,7 @@ public class RentEstimationControllerTests
 
         result?.Value.Should().BeEquivalentTo(expected);
         
-        _client.Verify(m => m.FetchRentalListingsByCityState(city, stateAbbrev), Times.Once);
+        _mediator.Verify(m => m.Send(request, default), Times.Once);
     }
     
     [Fact]
@@ -66,13 +66,13 @@ public class RentEstimationControllerTests
         };
 
         //act
-        var response = await _controller.FetchRentalsByCityState(request);
+        var response = await _controller.FetchRentalsByCityState(request, default);
 
         //assert
         response.Result.Should().BeAssignableTo<BadRequestObjectResult>();
         var result = response.Result as BadRequestObjectResult;
         result?.StatusCode.Should().Be(400);
         
-        _client.Verify(m => m.FetchRentalListingsByCityState(city, stateAbbrev), Times.Never);
+        _mediator.Verify(m => m.Send(request, default), Times.Never);
     }
 }
