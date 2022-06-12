@@ -18,3 +18,19 @@ public class GetRentalDetailResponse : StandardResponse
     [SwaggerSchemaExample("{ propertyDetail: {propertyDetailObject} }")]
     public string content { get; set; }
 }
+
+public class GetRentalDetailHandler : IRequestHandler<GetRentalDetailRequest, GetRentalDetailResponse>
+{
+    private readonly IRentEstimatorClient _client;
+
+    public GetRentalDetailHandler(IRentEstimatorClient client)
+    {
+        _client = client;
+    }
+    
+    public async Task<GetRentalDetailResponse> Handle(GetRentalDetailRequest request, CancellationToken token)
+    {
+        var content = await _client.FetchRental(request.propertyId);
+        return new GetRentalDetailResponse {content = content};
+    }
+}

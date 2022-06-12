@@ -21,11 +21,19 @@ public class RentEstimationController: ApiControllerBase, IRentEstimationControl
     public async Task<ActionResult<FetchRentalsByCityStateResponse>> FetchRentalsByCityState(FetchRentalsByCityStateRequest request, CancellationToken token)
     {
         var validator = new FetchRentalsByCityStateValidator();
-        var results = await validator.ValidateAsync(request);
+        var results = await validator.ValidateAsync(request, token);
         if (!results.IsValid)
         {
             return new BadRequestObjectResult(results.Errors);
         }
+        return new OkObjectResult(await _mediator.Send(request, token));
+    }
+
+    [HttpGet("detail", Name = "GetRentalDetail")]
+    [SwaggerOperation(Summary = "Fetches rental detail from Rent Estimation Service with given propertyId")]
+    public async Task<ActionResult<GetRentalDetailResponse>> GetRentalDetail([FromQuery] string propertyId, CancellationToken token)
+    {
+        var request = new GetRentalDetailRequest {propertyId = propertyId};
         return new OkObjectResult(await _mediator.Send(request, token));
     }
 }
@@ -33,4 +41,5 @@ public class RentEstimationController: ApiControllerBase, IRentEstimationControl
 public interface IRentEstimationController
 {
     Task<ActionResult<FetchRentalsByCityStateResponse>> FetchRentalsByCityState(FetchRentalsByCityStateRequest request, CancellationToken token);
+    Task<ActionResult<GetRentalDetailResponse>> GetRentalDetail(string propertyId, CancellationToken token);
 }

@@ -1,3 +1,4 @@
+using System.Threading;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -74,5 +75,28 @@ public class RentEstimationControllerTests
         result?.StatusCode.Should().Be(400);
         
         _mediator.Verify(m => m.Send(request, default), Times.Never);
+    }
+
+    [Fact]
+    public async void GetRentalDetails_WithValidRequest_InvokesClientAndRespondsWith200AndBody()
+    {
+        //arrange
+        const string propertyId = "M7952539079";
+        var expected = new GetRentalDetailResponse
+        {
+            content = "{content: asString}"
+        };
+        _mediator.Setup(m => m.Send(It.IsAny<GetRentalDetailRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(expected);
+        
+        //act
+        var response = await _controller.GetRentalDetail(propertyId, new CancellationToken());
+
+        //assert
+        _mediator.Verify(m => m.Send(It.IsAny<GetRentalDetailRequest>(), It.IsAny<CancellationToken>()), Times.Once);
+        
+        response.Result.Should().BeAssignableTo<OkObjectResult>();
+        var result = response.Result as OkObjectResult;
+
+        result?.Value.Should().BeSameAs(expected);
     }
 }
