@@ -16,10 +16,15 @@ public class RentEstimationController: ApiControllerBase, IRentEstimationControl
         _mediator = mediator;
     }
 
-    [HttpPost("city/state", Name = "FetchRentalsByCityState")]
+    [HttpGet("{city}/{stateAbbrev}", Name = "FetchRentalsByCityState")]
     [SwaggerOperation(Summary = "Fetches rentals from Rent Estimation Service with given city and state")]
-    public async Task<ActionResult<FetchRentalsByCityStateResponse>> FetchRentalsByCityState(FetchRentalsByCityStateRequest request, CancellationToken token)
+    public async Task<ActionResult<FetchRentalsByCityStateResponse>> FetchRentalsByCityState(string city, string stateAbbrev, CancellationToken token)
     {
+        var request = new FetchRentalsByCityStateRequest
+        {
+            city = city,
+            stateAbbrev = stateAbbrev
+        };
         var validator = new FetchRentalsByCityStateValidator();
         var results = await validator.ValidateAsync(request, token);
         if (!results.IsValid)
@@ -40,6 +45,6 @@ public class RentEstimationController: ApiControllerBase, IRentEstimationControl
 
 public interface IRentEstimationController
 {
-    Task<ActionResult<FetchRentalsByCityStateResponse>> FetchRentalsByCityState(FetchRentalsByCityStateRequest request, CancellationToken token);
+    Task<ActionResult<FetchRentalsByCityStateResponse>> FetchRentalsByCityState(string city, string stateAbbrev, CancellationToken token);
     Task<ActionResult<GetRentalDetailResponse>> GetRentalDetail(string propertyId, CancellationToken token);
 }

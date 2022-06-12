@@ -34,17 +34,12 @@ public class RentEstimationControllerTests
         //arrange
         const string city = "Chicago";
         const string stateAbbrev = "IL";
-        var request = new FetchRentalsByCityStateRequest
-        {
-            city = city,
-            stateAbbrev = stateAbbrev
-        };
         const string content = "testContentAsString";
         var expected = new FetchRentalsByCityStateResponse {content = content};
-        _mediator.Setup(c => c.Send(request, default)).ReturnsAsync(expected);
+        _mediator.Setup(c => c.Send(It.IsAny<FetchRentalsByCityStateRequest>(), default)).ReturnsAsync(expected);
 
         //act
-        var response = await _controller.FetchRentalsByCityState(request, default);
+        var response = await _controller.FetchRentalsByCityState(city, stateAbbrev, default);
 
         //assert
         response.Result.Should().BeAssignableTo<OkObjectResult>();
@@ -52,7 +47,7 @@ public class RentEstimationControllerTests
 
         result?.Value.Should().BeEquivalentTo(expected);
         
-        _mediator.Verify(m => m.Send(request, default), Times.Once);
+        _mediator.Verify(m => m.Send(It.IsAny<FetchRentalsByCityStateRequest>(), default), Times.Once);
     }
     
     [Fact]
@@ -67,7 +62,7 @@ public class RentEstimationControllerTests
         };
 
         //act
-        var response = await _controller.FetchRentalsByCityState(request, default);
+        var response = await _controller.FetchRentalsByCityState(city, stateAbbrev, default);
 
         //assert
         response.Result.Should().BeAssignableTo<BadRequestObjectResult>();
