@@ -12,13 +12,7 @@ using System.Data;
 
 public class DapperWrapperTests
 {
-    private readonly string sqlQuery = "select Name from dbo.Groceries";
-
-    [Fact]
-    public void Wrapper_Should_BeAssignableToIDapperWrapper()
-    {
-        typeof(DapperWrapper).Should().BeAssignableTo<IDapperWrapper>();
-    }
+    private const string sqlQuery = "select Name from dbo.Groceries";
 
     [Fact]
     public async void QueryAsync_WhenGivenAValidSqlQuery_ItShouldExecuteTheQueryAsynchronously()

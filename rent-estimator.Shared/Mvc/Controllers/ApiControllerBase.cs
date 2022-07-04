@@ -1,9 +1,10 @@
 using System.Net.Mime;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using rent_estimator.Shared.Documentation;
+using rent_estimator.Shared.Mvc.Documentation.Attributes;
+using rent_estimator.Shared.Mvc.Models;
 
-namespace rent_estimator.Shared.Mvc;
+namespace rent_estimator.Shared.Mvc.Controllers;
 
 [ApiController]
 [Consumes(MediaTypeNames.Application.Json)]

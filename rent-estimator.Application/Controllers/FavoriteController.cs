@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using rent_estimator.Modules.Account.Commands;
 using rent_estimator.Modules.Favorite.Commands;
 using rent_estimator.Modules.Favorite.Queries;
-using rent_estimator.Shared.Mvc;
+using rent_estimator.Shared.Mvc.Controllers;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace rent_estimator.Controllers;
@@ -25,16 +25,16 @@ public class FavoriteController : ApiControllerBase, IFavoriteController
         var results = await validator.ValidateAsync(request, cancellationToken);
         if (!results.IsValid)
         {
-            return new BadRequestObjectResult(results.Errors);
+            return BadRequest(results.Errors);
         }
-        return new OkObjectResult(await _mediator.Send(request, cancellationToken));
+        return Ok(await _mediator.Send(request, cancellationToken));
     }
     
     [HttpGet(Name = "GetFavorites")]
     [SwaggerOperation(Summary = "Get Favorites for user given accountId in query params")]
     public async Task<ActionResult<GetFavoritesResponse>> GetFavorites([FromQuery] string accountId, CancellationToken cancellationToken)
     {
-        return new OkObjectResult(await _mediator.Send(new GetFavoritesRequest{ accountId = accountId }, cancellationToken));
+        return Ok(await _mediator.Send(new GetFavoritesRequest{ AccountId = accountId }, cancellationToken));
     }
 }
 

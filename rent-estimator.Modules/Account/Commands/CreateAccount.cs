@@ -1,9 +1,8 @@
-using System.ComponentModel.DataAnnotations;
 using FluentValidation;
 using MediatR;
 using rent_estimator.Modules.Account.Dao;
-using rent_estimator.Shared.Documentation;
-using rent_estimator.Shared.Mvc;
+using rent_estimator.Shared.Mvc.Documentation.Attributes;
+using rent_estimator.Shared.Mvc.Models;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace rent_estimator.Modules.Account.Commands;
@@ -49,6 +48,7 @@ public class CreateAccountResponse: StandardResponse
 public class CreateAccountCommandHandler: IRequestHandler<CreateAccountRequest, CreateAccountResponse>
 {
     private readonly IAccountDao _accountDao;
+    
     public CreateAccountCommandHandler(IAccountDao accountDao)
     {
         _accountDao = accountDao;
@@ -86,7 +86,7 @@ public class CreateAccountRequestValidator : AbstractValidator<CreateAccountRequ
 
         RuleFor(p => p.Password)
             .NotEmpty()
-            .WithMessage("Password must not be empty.");
+            .WithMessage("{PropertyName} must not be empty.");
         
         RuleFor(p => p.Username)
             .Matches("^[a-zA-Z0-9_-]*$")
@@ -94,6 +94,6 @@ public class CreateAccountRequestValidator : AbstractValidator<CreateAccountRequ
         
         RuleFor(p => p.Username)
             .NotEmpty()
-            .WithMessage("Username must not be empty.");
+            .WithMessage("{PropertyName} must not be empty.");
     }
 }

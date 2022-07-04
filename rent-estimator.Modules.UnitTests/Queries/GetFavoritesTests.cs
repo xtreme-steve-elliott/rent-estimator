@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using Moq;
 using rent_estimator.Modules.Favorite.Dao;
@@ -10,49 +11,61 @@ namespace rent_estimator.Modules.UnitTests.Queries;
 
 public class GetFavoritesTests
 {
+    private readonly Mock<IFavoriteDao> _daoMock;
     private readonly GetFavoritesHandler _handler;
-    private readonly Mock<IFavoriteDao> _dao;
 
     public GetFavoritesTests()
     {
-        _dao = new Mock<IFavoriteDao>();
-        _handler = new GetFavoritesHandler(_dao.Object);
+        _daoMock = new Mock<IFavoriteDao>();
+        _handler = new GetFavoritesHandler(_daoMock.Object);
     }
 
     [Fact]
-    public async void GetFavorites_Handle_ShouldInvokeFavoriteDaoAndReturnGetFavoritesResponse()
+    public async void Handle_ShouldCall_FavoriteDaoGetFavorites_AndReturnGetFavoritesResponse()
     {
         //arrange
         var accountId = Guid.NewGuid().ToString();
-        var id = Guid.NewGuid().ToString();
-        const string propertyId = "M7952539079";
-        var request = new GetFavoritesRequest { accountId = accountId };
-        var favorite = new Favorite.Queries.Favorite
+        var request = new GetFavoritesRequest
         {
-            id = id,
-            propertyId = propertyId,
-            accountId = accountId
+            AccountId = accountId
         };
-        var favorites = new List<Favorite.Queries.Favorite> { favorite };
-        var expected = new GetFavoritesResponse
+        var foundFavoriteModels = new List<FavoriteModel>
         {
-            favorites = favorites,
+            new()
+            {
+                Id = Guid.NewGuid().ToString(),
+                PropertyId = "property1",
+                AccountId = accountId
+            },
+            new()
+            {
+                Id = Guid.NewGuid().ToString(),
+                PropertyId = "property2",
+                AccountId = accountId
+            }
+        };
+        var foundFavorites = foundFavoriteModels.Select(_ => new Favorite.Queries.Favorite
+        {
+            Id = _.Id,
+            PropertyId = _.PropertyId,
+            AccountId = _.AccountId
+        });
+        var expectedResponse = new GetFavoritesResponse
+        {
+            Favorites = foundFavorites,
+            // TODO: Don't like status like this
             Status = "Success"
         };
-        var favoriteModel = new FavoriteModel
-        {
-            id = id,
-            propertyId = propertyId,
-            accountId = accountId
-        };
-        var model = new List<FavoriteModel>{  favoriteModel };
-        _dao.Setup(dao => dao.GetFavorites(accountId)).ReturnsAsync(model);
 
+        _daoMock
+            .Setup(_ => _.GetFavorites(It.IsAny<string>()))
+            .ReturnsAsync(foundFavoriteModels);
+        
         //act
         var response = await _handler.Handle(request, default);
 
         //assert
-        response.Should().BeEquivalentTo(expected);
-        _dao.Verify(dao => dao.GetFavorites(accountId), Times.Once);
+        response.Should().BeEquivalentTo(expectedResponse);
+        _daoMock.Verify(_ => _.GetFavorites(accountId), Times.Once);
     }
 }

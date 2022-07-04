@@ -1,11 +1,11 @@
 using System.Threading;
 using FluentAssertions;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using rent_estimator.Controllers;
 using rent_estimator.Modules.RentEstimation.Queries;
-using rent_estimator.Shared.Mvc;
 using Xunit;
 
 namespace rent_estimator.Application.UnitTests.Controllers;
@@ -22,20 +22,13 @@ public class RentEstimationControllerTests
     }
 
     [Fact]
-    public void RentEstimationController_IsAssignableToBaseControllerAndIRentEstimationController()
-    {
-        _controller.Should().BeAssignableTo<IRentEstimationController>();
-        _controller.Should().BeAssignableTo<ApiControllerBase>();
-    }
-
-    [Fact]
     public async void FetchRentalsByCityState_WithValidRequest_InvokesClientAndRespondsWith200AndBody()
     {
         //arrange
         const string city = "Chicago";
         const string stateAbbrev = "IL";
         const string content = "testContentAsString";
-        var expected = new FetchRentalsByCityStateResponse {content = content};
+        var expected = new FetchRentalsByCityStateResponse {Content = content};
         _mediator.Setup(c => c.Send(It.IsAny<FetchRentalsByCityStateRequest>(), default)).ReturnsAsync(expected);
 
         //act
@@ -57,8 +50,8 @@ public class RentEstimationControllerTests
         const string stateAbbrev = "";
         var request = new FetchRentalsByCityStateRequest
         {
-            city = city,
-            stateAbbrev = stateAbbrev
+            City = city,
+            StateAbbreviation = stateAbbrev
         };
 
         //act
@@ -67,7 +60,7 @@ public class RentEstimationControllerTests
         //assert
         response.Result.Should().BeAssignableTo<BadRequestObjectResult>();
         var result = response.Result as BadRequestObjectResult;
-        result?.StatusCode.Should().Be(400);
+        result?.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
         
         _mediator.Verify(m => m.Send(request, default), Times.Never);
     }
@@ -79,7 +72,7 @@ public class RentEstimationControllerTests
         const string propertyId = "M7952539079";
         var expected = new GetRentalDetailResponse
         {
-            content = "{content: asString}"
+            Content = "{content: asString}"
         };
         _mediator.Setup(m => m.Send(It.IsAny<GetRentalDetailRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(expected);
         

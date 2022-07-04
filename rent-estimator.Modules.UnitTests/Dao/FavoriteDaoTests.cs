@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
-using Newtonsoft.Json;
 using rent_estimator.Modules.Favorite.Dao;
 using rent_estimator.Shared.Dapper;
 using Xunit;
@@ -11,117 +11,122 @@ namespace rent_estimator.Modules.UnitTests.Dao;
 
 public class FavoriteDaoTests
 {
-    private readonly Mock<IDapperWrapper> _db;
+    private const string CreateSqlStatement = "create test";
+    private const string GetSqlStatement = "get test";
+    private readonly Mock<IDapperWrapper> _dbMock;
+    private readonly Mock<IFavoriteSql> _favoriteSqlMock;
     private readonly IFavoriteDao _favoriteDao;
-    private readonly FavoriteSql _favoriteSql;
 
     public FavoriteDaoTests()
     {
-        _favoriteSql = new FavoriteSql();
-        _db = new Mock<IDapperWrapper>();
-        _favoriteDao = new FavoriteDao(_db.Object, _favoriteSql);
+        _dbMock = new Mock<IDapperWrapper>();
+        _favoriteSqlMock = new Mock<IFavoriteSql>();
+        _favoriteSqlMock
+            .Setup(_ => _.CreateFavoriteSql())
+            .Returns(CreateSqlStatement);
+        _favoriteSqlMock
+            .Setup(_ => _.GetFavoritesSql())
+            .Returns(GetSqlStatement);
+        _favoriteDao = new FavoriteDao(_dbMock.Object, _favoriteSqlMock.Object);
     }
 
     [Fact]
-    public void FavoriteDao_ImplementsIFavoriteDaoInterface()
-    {
-        _favoriteDao.Should().BeAssignableTo<IFavoriteDao>();
-    }
-
-    [Fact]
-    public async void FavoriteDao_WhenCreateFavoriteQueryRuns_InvokesDbConnection()
+    public async Task CreateFavorite_ShouldCall_FavoriteSqlCreateFavoriteSql_AndDbQueryFirstAsync()
     {
         //arrange
-        var accountId = Guid.NewGuid().ToString();
-        var favoriteId = Guid.NewGuid().ToString();
-        const string propertyId = "M7952539079";
         var favoriteModel = new FavoriteModel
         {
-            id = favoriteId,
-            accountId = accountId,
-            propertyId = propertyId
-        }; 
-        var param = new 
-        {
-            id = favoriteId,
-            accountId,
-            propertyId
+            Id = Guid.NewGuid().ToString(),
+            AccountId = Guid.NewGuid().ToString(),
+            PropertyId = "M7952539079"
         };
-        var query = _favoriteSql.CreateFavoriteSql();
 
         //act
         await _favoriteDao.CreateFavorite(favoriteModel);
 
         //assert
-        _db.Verify(db => db.QueryFirstAsync<FavoriteModel>(query, It.Is<object>(p => JsonConvert.SerializeObject(param) == JsonConvert.SerializeObject(p))), Times.Once);
+        _favoriteSqlMock.Verify(_ => _.CreateFavoriteSql(), Times.Once);
+        _dbMock.Verify(_ => _.QueryFirstAsync<FavoriteModel>(CreateSqlStatement, favoriteModel), Times.Once);
     }
     
     [Fact]
-    public async void FavoriteDao_CreateAccount_SavesAndReturnsCreatedAccount()
+    public async Task CreateFavorite_ShouldReturn_CreatedFavorite()
     {
         //arrange
-        var accountId = Guid.NewGuid().ToString();
-        var favoriteId = Guid.NewGuid().ToString();
-        const string propertyId = "M7952539079";
         var favoriteModel = new FavoriteModel
         {
-            id = favoriteId,
-            accountId = accountId,
-            propertyId = propertyId
-        }; 
-        var param = new 
-        {
-            id = favoriteId,
-            accountId,
-            propertyId
+            Id = Guid.NewGuid().ToString(),
+            AccountId = Guid.NewGuid().ToString(),
+            PropertyId = "M7952539079"
         };
-        var query = _favoriteSql.CreateFavoriteSql();
-        _db.Setup(db => db.QueryFirstAsync<FavoriteModel>(query, It.Is<object>(p => JsonConvert.SerializeObject(param) == JsonConvert.SerializeObject(p)))).ReturnsAsync(favoriteModel);
+        
+        _dbMock
+            .Setup(_ => _.QueryFirstAsync<FavoriteModel>(It.IsAny<string>(), It.IsAny<object>()))
+            .ReturnsAsync(favoriteModel);
 
         //act
-        var savedModel = await _favoriteDao.CreateFavorite(favoriteModel);
+        var createdFavorite = await _favoriteDao.CreateFavorite(favoriteModel);
 
         //assert
-        savedModel.Should().BeEquivalentTo(favoriteModel);
+        createdFavorite.Should().BeEquivalentTo(favoriteModel);
     }
 
     [Fact]
-    public async void FavoriteDao_WhenGetFavoritesQueryRuns_InvokesDbConnection()
+    public async Task GetFavourites_ShouldCall_FavoriteSqlGetFavoritesSql_AndDbQueryAsync()
     {
         //arrange
         var accountId = Guid.NewGuid().ToString();
-        var param = new { accountId };
-        var query = _favoriteSql.GetFavoritesSql();
+        var expectedParam = new
+        {
+            AccountId = accountId
+        };
+        var capturedParam = new object();
+
+        _dbMock
+            .Setup(_ => _.QueryAsync<FavoriteModel>(It.IsAny<string>(), It.IsAny<object>()))
+            .Callback<string, object>((_, o) =>
+            {
+                capturedParam = o;
+            });
 
         //act
         await _favoriteDao.GetFavorites(accountId);
 
         //assert
-        _db.Verify(db => db.QueryAsync<FavoriteModel>(query, It.Is<object>(p => JsonConvert.SerializeObject(param) == JsonConvert.SerializeObject(p))), Times.Once);
+        capturedParam.Should().BeEquivalentTo(expectedParam);
+        _favoriteSqlMock.Verify(_ => _.GetFavoritesSql(), Times.Once);
+        _dbMock.Verify(_ => _.QueryAsync<FavoriteModel>(GetSqlStatement, capturedParam), Times.Once);
     }
     
     [Fact]
-    public async void FavoriteDao_GetFavorites_ReturnsListOfFavoritesForGivenAccount()
+    public async Task GetFavorites_ShouldReturn_IEnumerableOfFavoriteModels_ForRequestedAccountId()
     {
         //arrange
         var accountId = Guid.NewGuid().ToString();
-        var favoriteId = Guid.NewGuid().ToString();
-        const string propertyId = "M7952539079";
-        var favoriteModel = new FavoriteModel
+        var favoriteModels = new List<FavoriteModel>
         {
-            id = favoriteId,
-            accountId = accountId,
-            propertyId = propertyId
+            new()
+            {
+                Id = Guid.NewGuid().ToString(),
+                AccountId = accountId,
+                PropertyId = "M7952539079"
+            },
+            new()
+            {
+                Id = Guid.NewGuid().ToString(),
+                AccountId = accountId,
+                PropertyId = "M7952539080"
+            }
         };
-        var models = new List<FavoriteModel>{ favoriteModel };
-        var param = new { accountId };
-        var query = _favoriteSql.GetFavoritesSql();
-        _db.Setup(db => db.QueryAsync<FavoriteModel>(query, It.Is<object>(p => JsonConvert.SerializeObject(param) == JsonConvert.SerializeObject(p)))).ReturnsAsync(models);
-
+        var expectedFavoriteModels = favoriteModels;
+        _dbMock
+            .Setup(_ => _.QueryAsync<FavoriteModel>(GetSqlStatement, It.IsAny<object>()))
+            .ReturnsAsync(favoriteModels);
+    
         //act
-        var fetchedModels = await _favoriteDao.GetFavorites(accountId);
-
+        var fetchedFavorites = await _favoriteDao.GetFavorites(accountId);
+    
         //assert
-        fetchedModels.Should().BeEquivalentTo(models);
+        fetchedFavorites.Should().BeEquivalentTo(expectedFavoriteModels);
     }
 }

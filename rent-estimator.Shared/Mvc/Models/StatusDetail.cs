@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace rent_estimator.Shared.Mvc;
+namespace rent_estimator.Shared.Mvc.Models;
 
 public class StatusDetail
 {

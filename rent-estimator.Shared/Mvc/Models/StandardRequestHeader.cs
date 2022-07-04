@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
-using rent_estimator.Shared.Documentation;
+using rent_estimator.Shared.Mvc.Documentation.Attributes;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace rent_estimator.Shared.Mvc;
+namespace rent_estimator.Shared.Mvc.Models;
 
 public class StandardRequestHeader
 {

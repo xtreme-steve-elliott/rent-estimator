@@ -3,34 +3,28 @@ using System.Collections.Generic;
 using System.Threading;
 using FluentAssertions;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using rent_estimator.Controllers;
 using rent_estimator.Modules.Favorite.Commands;
 using rent_estimator.Modules.Favorite.Queries;
-using rent_estimator.Shared.Mvc;
 using Xunit;
 
 namespace rent_estimator.Application.UnitTests.Controllers;
 
 public class FavoriteControllerTests
 {
-    private readonly IFavoriteController _controller;
     private readonly Mock<IMediator> _mediator;
+    private readonly IFavoriteController _controller;
 
     public FavoriteControllerTests()
     {
         _mediator = new Mock<IMediator>();
         _controller = new FavoriteController(_mediator.Object);
     }
-    
-    [Fact]
-    public void FavoriteController_ShouldBeOfTypeIFavoriteControllerAndApiControllerBase()
-    {
-        _controller.Should().BeAssignableTo<IFavoriteController>();
-        _controller.Should().BeAssignableTo<ApiControllerBase>();
-    }
-    
+
+    // TODO: Probably don't need this
     [Fact]
     public void CreateFavorite_ShouldBeDecoratedWith()
     {
@@ -54,14 +48,14 @@ public class FavoriteControllerTests
         const string propertyId = "M7952539079";
         var validRequest = new CreateFavoriteRequest
         {
-            accountId = accountId,
-            propertyId = propertyId
+            AccountId = accountId,
+            PropertyId = propertyId
         };
         var expected = new CreateFavoriteResponse
         {
-            id = favoriteId,
-            accountId = accountId,
-            propertyId = propertyId,
+            Id = favoriteId,
+            AccountId = accountId,
+            PropertyId = propertyId,
             Status = "Success"
         };
         _mediator.Setup(m =>
@@ -100,7 +94,7 @@ public class FavoriteControllerTests
         //Assert
         response.Result.Should().BeAssignableTo<BadRequestObjectResult>();
         var result = response.Result as BadRequestObjectResult;
-        result?.StatusCode.Should().Be(400);
+        result?.StatusCode.Should().Be(StatusCodes.Status400BadRequest);
 
         _mediator.Verify(m => m.Send(
                 It.IsAny<CreateFavoriteRequest>(),
@@ -117,14 +111,14 @@ public class FavoriteControllerTests
         const string propertyId = "M7952539079";
         var favorite = new Favorite
         {
-            id = id,
-            propertyId = propertyId,
-            accountId = accountId
+            Id = id,
+            PropertyId = propertyId,
+            AccountId = accountId
         };
         var favorites = new List<Favorite> { favorite };
         var expected = new GetFavoritesResponse
         {
-            favorites = favorites,
+            Favorites = favorites,
             Status = "Success"
         };
         _mediator.Setup(m =>

@@ -10,23 +10,18 @@ using Xunit;
 
 namespace rent_estimator.Modules.UnitTests;
 
+// TODO: Haven't really looked at this yet.
 public class RentEstimationClientTests
 {
+    private readonly Mock<IHttpClientFactory> _httpClientFactoryMock;
     private readonly IRentEstimatorClient _rentEstimatorClient;
-    private readonly Mock<IHttpClientFactory> _clientFactory;
-    
+
     public RentEstimationClientTests()
     {
-        _clientFactory = new Mock<IHttpClientFactory>();
-        _rentEstimatorClient = new RentEstimatorClient(_clientFactory.Object);
+        _httpClientFactoryMock = new Mock<IHttpClientFactory>();
+        _rentEstimatorClient = new RentEstimatorClient(_httpClientFactoryMock.Object);
     }
 
-    [Fact]
-    public void RentEstimatorClient_ImplementsTheIRentEstimatorInterface()
-    {
-        _rentEstimatorClient.Should().BeAssignableTo<IRentEstimatorClient>();
-    }
-    
     [Fact]
     public async void FetchRentalsByCityState_WhenRequestIsValid_InvokesClientAndReturnsListings()
     {
@@ -55,7 +50,9 @@ public class RentEstimationClientTests
         var client = new HttpClient();
         client.BaseAddress = new Uri("http://localhost:2011");
 
-        _clientFactory.Setup(f => f.CreateClient(nameof(RentEstimatorClient))).Returns(client);
+        _httpClientFactoryMock
+            .Setup(_ => _.CreateClient(nameof(RentEstimatorClient)))
+            .Returns(client);
 
         //act
         var response = await _rentEstimatorClient.FetchRentalsByCityState(city, stateAbbrev);
@@ -93,7 +90,7 @@ public class RentEstimationClientTests
         var client = new HttpClient();
         client.BaseAddress = new Uri("http://localhost:2011");
 
-        _clientFactory.Setup(f => f.CreateClient(nameof(RentEstimatorClient))).Returns(client);
+        _httpClientFactoryMock.Setup(f => f.CreateClient(nameof(RentEstimatorClient))).Returns(client);
 
         //act
         var response = await _rentEstimatorClient.FetchRental(propertyId);

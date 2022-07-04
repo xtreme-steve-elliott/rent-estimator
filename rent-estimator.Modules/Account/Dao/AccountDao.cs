@@ -13,18 +13,10 @@ public class AccountDao : IAccountDao
         _accountSql = accountSql;
     }
     
-    public async Task<AccountModel> CreateAccount(AccountModel account)
+    public Task<AccountModel> CreateAccount(AccountModel account)
     {
-        var sql = _accountSql.CreateAccountSql();
-        var param = new
-        {
-            Id = account.Id,
-            Username =account.Username,
-            Password =account.Password,
-            FirstName = account.FirstName,
-            LastName = account.LastName
-        };
-        return await _dbConnection.QueryFirstAsync<AccountModel>(sql, param);
+        // TODO: I don't like the fact insertion is done through a query. It's not single responsibility enough
+        return _dbConnection.QueryFirstAsync<AccountModel>(_accountSql.CreateAccountSql(), account);
     }
 }
 

@@ -1,6 +1,6 @@
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace rent_estimator.Shared.Documentation;
+namespace rent_estimator.Shared.Mvc.Documentation.Attributes;
 
 /// <summary>
 /// Enriches SwaggerGen with response headers in addition to body schema. 

@@ -1,7 +1,7 @@
 using System;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
-using Newtonsoft.Json;
 using rent_estimator.Modules.Account.Dao;
 using rent_estimator.Shared.Dapper;
 using Xunit;
@@ -10,25 +10,23 @@ namespace rent_estimator.Modules.UnitTests.Dao;
 
 public class AccountDaoTests
 {
-    private readonly Mock<IDapperWrapper> _db;
+    private const string CreateSqlStatement = "create test";
+    private readonly Mock<IDapperWrapper> _dbMock;
+    private readonly Mock<IAccountSql> _accountSqlMock;
     private readonly IAccountDao _accountDao;
-    private readonly AccountSql _accountSql;
 
     public AccountDaoTests()
     {
-        _accountSql = new AccountSql();
-        _db = new Mock<IDapperWrapper>();
-        _accountDao = new AccountDao(_db.Object, _accountSql);
+        _dbMock = new Mock<IDapperWrapper>();
+        _accountSqlMock = new Mock<IAccountSql>();
+        _accountSqlMock
+            .Setup(_ => _.CreateAccountSql())
+            .Returns(CreateSqlStatement);
+        _accountDao = new AccountDao(_dbMock.Object, _accountSqlMock.Object);
     }
 
     [Fact]
-    public void AccountDao_ImplementsIAccountDaoInterface()
-    {
-        _accountDao.Should().BeAssignableTo<IAccountDao>();
-    }
-    
-    [Fact]
-    public async void AccountDao_WhenQueryRuns_InvokesDbConnection()
+    public async Task CreateAccount_ShouldCall_AccountSqlCreateAccountSql_AndDbQueryFirstAsync()
     {
         //arrange
         var accountModel = new AccountModel
@@ -39,28 +37,17 @@ public class AccountDaoTests
             FirstName = "John",
             LastName = "Testerson"
         };
-        var param = new
-        {
-            Id = accountModel.Id,
-            Username =accountModel.Username,
-            Password =accountModel.Password,
-            FirstName = accountModel.FirstName,
-            LastName = accountModel.LastName,
-        };
-        var sqlQuery = _accountSql.CreateAccountSql();
         
         //act
         await _accountDao.CreateAccount(accountModel);
 
         //assert
-        _db.Verify(c => c.QueryFirstAsync<AccountModel>(
-                sqlQuery, 
-                It.Is<object>(p => JsonConvert.SerializeObject(param) == JsonConvert.SerializeObject(p)) 
-            ), Times.Once);
+        _accountSqlMock.Verify(_ => _.CreateAccountSql(), Times.Once);
+        _dbMock.Verify(_ => _.QueryFirstAsync<AccountModel>(CreateSqlStatement, accountModel), Times.Once);
     }
     
     [Fact]
-    public async void AccountDao_CreateAccount_SavesAndReturnsCreatedAccount()
+    public async Task CreateAccount_ShouldReturn_CreatedAccount()
     {
         //arrange
         var accountModel = new AccountModel
@@ -71,9 +58,9 @@ public class AccountDaoTests
             FirstName = "John",
             LastName = "Testerson",
         };
-        var sqlQuery = _accountSql.CreateAccountSql();
 
-        _db.Setup(c => c.QueryFirstAsync<AccountModel>(sqlQuery, It.IsAny<object>()))
+        _dbMock
+            .Setup(_ => _.QueryFirstAsync<AccountModel>(It.IsAny<string>(), It.IsAny<object>()))
             .ReturnsAsync(accountModel);
         
         //act

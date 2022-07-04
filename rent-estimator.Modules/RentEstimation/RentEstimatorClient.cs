@@ -9,6 +9,7 @@ public class RentEstimatorClient : IRentEstimatorClient
         _clientFactory = clientFactory;
     }
 
+    // TODO: Could this have been an object instead?
     public async Task<string> FetchRentalsByCityState(string city, string stateAbbrev)
     {
         var client = _clientFactory.CreateClient(nameof(RentEstimatorClient));
